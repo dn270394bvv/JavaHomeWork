@@ -1,5 +1,6 @@
 package com.pb.bazeluk.hw3;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Array {
@@ -35,18 +36,9 @@ public class Array {
                 }
             }
         }
-        // вывод введенного массива
-        System.out.print("Исходный массив: ");
-        for (int anArray : array) {
-            System.out.print(anArray + " ");
-        }
-        System.out.println();// переход на новую строку
+        System.out.println("Исходный массив: "+Arrays.toString(array));
         System.out.println("Сумма всех елементов: "+sum);
         System.out.println("Количество положительных чисел: "+posEl);
-        // вывод сортированного массива
-        System.out.print("Отсортированный массив: ");
-        for (int anArray : arraySort) {
-            System.out.print(anArray + " ");
-        }
+        System.out.print("Отсортированный массив: "+ Arrays.toString(arraySort));
     }
 }
