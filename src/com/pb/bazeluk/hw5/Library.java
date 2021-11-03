@@ -21,9 +21,9 @@ public class Library {
         readers[2].takeBook(books);
 
         //тест методов returnBook
-        readers[0].takeBook(books.length);
-        readers[1].takeBook(getName(books));
-        readers[2].takeBook(books);
+        readers[0].returnBook(books.length);
+        readers[1].returnBook(getName(books));
+        readers[2].returnBook(books);
 
     }
     private static String[] getName(Book... books){
