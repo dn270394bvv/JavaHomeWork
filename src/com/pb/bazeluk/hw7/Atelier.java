@@ -1,5 +1,9 @@
 package com.pb.bazeluk.hw7;
 
+/**
+ * @author Vasiliy
+ * Домашнее задание к лекции 7
+ */
 public class Atelier {
 
     /**
@@ -11,13 +15,24 @@ public class Atelier {
         S(36,"Взрослый размер"),
         M(38,"Взрослый размер") ,
         L(40,"Взрослый размер");
+
         private final int euroSize;
         private final String description;
+
+        /**
+         * Констрруктор размеров
+         * @param euroSize - размер в евро формате
+         * @param description - описание размера
+         */
         Size(int euroSize,String description) {
             this.description = description;
             this.euroSize = euroSize;
         }
 
+        /**
+         * Получение описания размера
+         * @param size - размер типа Size
+         */
         public void getDescription(Size size){
             System.out.println(size.description);
         }
@@ -27,7 +42,7 @@ public class Atelier {
     }
 
     /**
-     * Абстракция для будущих классов
+     * Класс Clothes - абстракция для будущих классов Tshirt, Pants, Skirt, Tie
      */
     //Абстрактный класс
    public abstract class  Clothes{
@@ -36,23 +51,34 @@ public class Atelier {
         String color;
     }
 
+    /**
+     * Интерфейс ManClothes  для будущих классов мужской одежды
+     */
     // Интерфейс для одеть мужчину
     public interface ManClothes {
         void dressMan();
     }
-
+    /**
+     * Интерфейс WomenClothes для будущих классов женской одежды
+     */
     // Интерфейс для одеть женщину
     public interface WomenClothes {
         void dressWomen();
     }
 
     /**
-     * Реализация абстракции
+     * Реализация абстракции Clothes, WomenClothes, ManClothes
      */
-
     // футболка
     public class Tshirt extends  Clothes implements ManClothes,WomenClothes {
         // конструктор
+
+        /**
+         * Конструктор футболок
+         * @param size - размер типа Size
+         * @param price - цена
+         * @param color - цвет
+         */
         public Tshirt (Size size, double price, String color){
             super.color =  color;
             super.size = size;
@@ -68,10 +94,17 @@ public class Atelier {
             System.out.println("Женская футболка\nРазмер: " + this.size + "("+this.size.getEuroSize(size)+")" +  "\nЦвет: "+this.color+"\nЦена: "+ this.price);
         }
     }
-
+    /**
+     * Реализация абстракции Clothes, WomenClothes, ManClothes
+     */
     //штаны
   public class Pants extends  Clothes implements ManClothes,WomenClothes {
-
+        /**
+         * Конструктор штанов
+         * @param size - размер типа Size
+         * @param price - цена
+         * @param color - цвет
+         */
         public Pants (Size size, double price, String color){
             super.color =  color;
             super.size = size;
@@ -87,10 +120,17 @@ public class Atelier {
             System.out.println("Женские штаны\nРазмер: " + this.size + "("+this.size.getEuroSize(size)+")" + "\nЦвет: "+this.color+"\nЦена: "+ this.price);
         }
     }
-
+    /**
+     * Реализация абстракции Clothes, WomenClothes
+     */
     //юбка
     public class Skirt extends  Clothes implements WomenClothes {
-
+        /**
+         * Конструктор юбок
+         * @param size - размер типа Size
+         * @param price - цена
+         * @param color - цвет
+         */
         public Skirt (Size size, double price, String color){
             super.color =  color;
             super.size = size;
@@ -102,10 +142,17 @@ public class Atelier {
             System.out.println("Женская юбка\nРазмер: " + this.size + "("+this.size.getEuroSize(size)+")" + "\nЦвет: "+this.color+"\nЦена: "+ this.price);
         }
     }
-
+    /**
+     * Реализация абстракции Clothes, ManClothes
+     */
     //галстук
     public class Tie extends  Clothes implements ManClothes {
-
+        /**
+         * Конструктор галстуков
+         * @param size - размер типа Size
+         * @param price - цена
+         * @param color - цвет
+         */
         public Tie (Size size, double price, String color){
             super.color =  color;
             super.size = size;
@@ -119,7 +166,7 @@ public class Atelier {
     }
 
     /**
-     * реализация статических методов
+     * реализация статического метода для вывода информации о мужской одежде
      * @param clothes - массив одежды
      */
     public static void dressMan(Atelier.Clothes[] clothes){
@@ -130,7 +177,10 @@ public class Atelier {
             }
         }
     }
-
+    /**
+     * реализация статического метода для вывода информации о женской одежде
+     * @param clothes - массив одежды
+     */
     public static void dressWomen(Clothes[] clothes){
         System.out.println("Демонстрация женской одежды:");
         for (Atelier.Clothes clothes1:clothes){
