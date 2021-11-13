@@ -37,7 +37,7 @@ public class Atelier {
             System.out.println(size.description);
         }
         public int getEuroSize(Size size){
-            return this.euroSize;
+            return size.euroSize;
         }
     }
 
@@ -195,6 +195,7 @@ public class Atelier {
                             ,new Atelier().new Tshirt (Size.XS,100,"white")
                             ,new Atelier().new Skirt (Size.L,34.50,"blue")
                             ,new Atelier().new Tie (Size.S,15.96,"black")
+                            ,new Atelier().new Tie (Size.M,20.96,"yellow")
                             };
         Atelier.dressMan(clothes);
         System.out.println("---------------------------------");
