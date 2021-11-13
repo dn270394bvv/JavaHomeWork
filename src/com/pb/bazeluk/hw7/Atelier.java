@@ -1,13 +1,13 @@
 package com.pb.bazeluk.hw7;
 
 /**
+ * Домашнее задание 7
  * @author Vasiliy
- * Домашнее задание к лекции 7
  */
 public class Atelier {
 
     /**
-     * Перечисление для размеров одежды
+     * перечисление размера
      */
     public enum Size {
         XXS(32,"Детский размер"),
@@ -52,16 +52,16 @@ public class Atelier {
     }
 
     /**
-     * Интерфейс ManClothes  для будущих классов мужской одежды
+     * interface ManClothes для будущих классов мужской одежды
      */
-    // Интерфейс для одеть мужчину
+
     public interface ManClothes {
         void dressMan();
     }
+
     /**
-     * Интерфейс WomenClothes для будущих классов женской одежды
+     * interface WomenClothes для будущих классов женской одежды
      */
-    // Интерфейс для одеть женщину
     public interface WomenClothes {
         void dressWomen();
     }
