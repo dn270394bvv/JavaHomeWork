@@ -161,7 +161,7 @@ public class Atelier {
 
         @Override
         public void dressMan() {
-            System.out.println("Мужской галстук\nРазмер: " + this.size + "("+this.size.getEuroSize(size)+")" + "\nЦвет: "+this.color+"\nЦена: "+ this.price);
+            System.out.println("Мужской галстук\nРазмер: " + this.size + "("+this.size.euroSize+")" + "\nЦвет: "+this.color+"\nЦена: "+ this.price);
         }
     }
 
