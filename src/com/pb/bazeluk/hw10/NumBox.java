@@ -10,11 +10,7 @@ public class NumBox <T extends Number>{
 
     public void add(T num)throws ArrayIndexOutOfBoundsException{
         if (this.length()== arrayT.length) throw new ArrayIndexOutOfBoundsException("Превышен установленный при инициализации размер массива");
-    for (int i=0; i<arrayT.length;i++){
-        if (arrayT[i] != null) continue;
-            arrayT[i]= num;
-            break;
-    }
+         arrayT[this.length()] =num;
     }
     public T get(int index) {
         try {
