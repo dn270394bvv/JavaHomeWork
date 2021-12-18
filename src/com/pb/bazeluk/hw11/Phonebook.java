@@ -163,6 +163,7 @@ public class Phonebook {
 
    // Запись
         public static void toFile(ArrayList<User> phonebooks) throws Exception {
+
             File file = Paths.get("TestFiles/Users.data").toFile();
             FileOutputStream outputStream = new FileOutputStream(file);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
@@ -174,13 +175,23 @@ public class Phonebook {
         }
 
         //Чтение
-        public static void fromFile() throws Exception {
+        public static ArrayList<User> fromFile() throws Exception {
+            ObjectMapper mapper = new ObjectMapper();
+            // pretty printing (json с отступами)
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+            // для работы с полями типа LocalDate
+            SimpleModule module = new SimpleModule();
+            module.addSerializer(LocalDate.class, new LocalDateSerializer());
+            module.addDeserializer(LocalDate.class, new LocalDateDeserializer());
+            mapper.registerModule(module);
+
+
             File file = Paths.get("TestFiles/Users.data").toFile();
             FileInputStream fileInputStream = new FileInputStream(file);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            String s = (String) objectInputStream.readObject();;
-            //ArrayList<User> users = (ArrayList<User>) objectInputStream.readObject();
-            System.out.println(s);
+            String users = (String) objectInputStream.readObject();
+            return mapper.readValue(users,ArrayList.class);
         }
 
 
@@ -238,9 +249,9 @@ public class Phonebook {
             System.out.println("Файл записан");
 
             System.out.println("Чтение с файла");
-         //   ArrayList<User> phonebookDeserial = fromFile();
+            ArrayList<User> phonebookDeserial = fromFile();
             System.out.println("Файл прочитан");
-          //  System.out.println(phonebookDeserial.toString());
+            System.out.println(phonebookDeserial.toString());
 
             System.out.println("Сортированные пользователи по ФИО пользователи");
             phonebooks.sort(uFIOComp);
