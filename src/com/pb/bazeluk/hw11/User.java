@@ -1,25 +1,36 @@
 package com.pb.bazeluk.hw11;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
-public class User implements Serializable {
-    private final static long serialVersionUID = 42;
-    private String fio;
-    private LocalDate bDay;
-    private HashMap<PhoneType,String> phones;
-    private ResidenceAddress address;
-    private Timestamp change;
 
-    public User (String fio,LocalDate bDay, HashMap<PhoneType, String>  phones, ResidenceAddress address){
+public class User{
+    private String fio;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    private LocalDate bDay;
+    private List<String> phones = new ArrayList<>();
+    private ResidenceAddress address;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime change;
+    public User(){
+
+    };
+
+    public User (String fio,LocalDate bDay, ResidenceAddress address, List<String>  phones){
         this.fio = fio;
         this.bDay = bDay;
         this.phones  = phones;
         this.address = address;
-        this.change = new Timestamp(new Date().getTime());
+        this.change = LocalDateTime.now();
     }
+
+
 
 
     public String getFio() {
@@ -28,7 +39,7 @@ public class User implements Serializable {
 
     public void setFio(String fio) {
         this.fio = fio;
-        this.change = new Timestamp(new Date().getTime());
+        this.change = LocalDateTime.now();
     }
 
     public LocalDate getbDay() {
@@ -37,16 +48,16 @@ public class User implements Serializable {
 
     public void setbDay(LocalDate bDay) {
         this.bDay = bDay;
-        this.change = new Timestamp(new Date().getTime());
+        this.change = LocalDateTime.now();
     }
 
-    public HashMap<PhoneType, String> getPhones() {
+    public List<String> getPhones() {
         return phones;
     }
 
-    public void setPhones(HashMap<PhoneType, String> phones) {
+    public void setPhones(List< String> phones) {
         this.phones = phones;
-        this.change = new Timestamp(new Date().getTime());
+        this.change = LocalDateTime.now();
     }
 
     public ResidenceAddress getAddress() {
@@ -55,12 +66,13 @@ public class User implements Serializable {
 
     public void setAddress(ResidenceAddress address) {
         this.address = address;
-        this.change = new Timestamp(new Date().getTime());
+        this.change = LocalDateTime.now();
     }
 
-    public Timestamp getChange() {
+    public LocalDateTime getChange() {
         return change;
     }
+
 
     @Override
     public String toString() {
@@ -71,5 +83,18 @@ public class User implements Serializable {
                 "address=" + address + ",\n"+
                 "change=" + change + ",\n"+
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return fio.equals(user.fio) && bDay.equals(user.bDay) && phones.equals(user.phones) && address.equals(user.address) && change.equals(user.change);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fio, bDay, phones, address, change);
     }
 }

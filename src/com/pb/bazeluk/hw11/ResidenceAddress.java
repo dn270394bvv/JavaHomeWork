@@ -7,17 +7,15 @@ public class ResidenceAddress {
     private short nHouse;
     private String entrance;
     private short apartment;
-
+    public  ResidenceAddress(){};
     @Override
     public String toString() {
-        return "ResidenceAddress{" +
-                "country='" + country + '\'' +
-                ", town='" + town + '\'' +
-                ", street='" + street + '\'' +
-                ", nHouse=" + nHouse +
-                ", entrance='" + entrance + '\'' +
-                ", apartment=" + apartment +
-                "}";
+        return  country +
+                " г." + town +
+                " ул." + street +
+                ", д." + nHouse +
+                "/" + entrance +
+                " кв." + apartment;
     }
 
     public ResidenceAddress(String country, String town, String street, short nHouse, String entrance, short apartment ){

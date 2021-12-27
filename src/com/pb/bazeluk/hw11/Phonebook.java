@@ -1,23 +1,35 @@
 package com.pb.bazeluk.hw11;
 
-
-
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Stream;
 
 
 public class Phonebook {
+
+    private final  List<User> users = new ArrayList<>();
+
+    public Phonebook() {
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+
+
     /*---------------------------------------
-    Создание
+    Создание (обновлено)
      ----------------------------------------*/
-    public static ResidenceAddress newAddr(){
+    public ResidenceAddress newAdr(){
        Scanner scanner = new Scanner(System.in);
          String country;
          String town;
@@ -26,7 +38,7 @@ public class Phonebook {
          String entrance;
         short apartment;
 
-        System.out.println("Ввод адреса проживания пользователя.");
+        System.out.println("Укажите адрес проживания пользователя:");
         System.out.print("Страна: ");
         country = scanner.nextLine();
         System.out.print("Горорд: ");
@@ -43,45 +55,23 @@ public class Phonebook {
        return new ResidenceAddress(country,town,street,nHouse,entrance,apartment);
     }
 
-    public static HashMap<PhoneType,String> newPhones(){
+    public  List<String> newPhones(){
         Scanner scanner = new Scanner(System.in);
-        HashMap<PhoneType,String> phone = new HashMap<>();
+        List<String> phone = new ArrayList<>();
         while (true){
-
-            System.out.println("Введите тип телефона: MOB, HOME, WORK!");
-            if (phone.size()>0) System.out.println("Что бы завершить ввод введите EXIT!");
+            System.out.print("Введите мобильный номер телефона: ");
+            if (phone.size()>0) System.out.println("(Для завершения введите exit)");
+            else System.out.println();
             String s =scanner.nextLine() ;
-            switch (s) {
-                case "MOB": {
-                    System.out.print("Введите мобильный номер телефона: ");
-                    phone.put(PhoneType.MOB,scanner.nextLine());
-                    break;
-                            }
-
-                case "HOME": {
-                    System.out.print("Введите домашний номер телефона: ");
-                    phone.put(PhoneType.HOME,scanner.nextLine());
-                    break;
-                            }
-                case "WORK": {
-                    System.out.print("Введите рабочий номер телефона: ");
-                    phone.put(PhoneType.WORK,scanner.nextLine());
-                    break;
-                             }
-                default:{
-                    System.out.println("Тип телефона введен не коректно!");
-                    break;
-                         }
+            if (Objects.equals(s,"exit")) break;
+            phone.add(s);
             }
-            if ((Objects.equals(s,"EXIT"))&&phone.size()>0) break;
-        }
         return phone;
     }
-    public static void newUser(ArrayList<User> phonebook){
+    public  void newUser(){
         Scanner scanner = new Scanner(System.in);
         String fio;
         int YYYY,MM,DD;
-        System.out.println("Добавление нового пользователя в Телефонную книгу:");
         System.out.print("Введите ФИО: ");
         fio= scanner.nextLine();
         System.out.print("Год рождения: ");
@@ -90,186 +80,118 @@ public class Phonebook {
         MM = scanner.nextInt();
         System.out.print("День рождения: ");
         DD = scanner.nextInt();
-        phonebook.add(new User(fio, LocalDate.of(YYYY, MM, DD),newPhones(),newAddr()));
+        this.users.add(new User(fio, LocalDate.of(YYYY, MM, DD),newAdr(),newPhones()));
     }
 
     /*---------------------------------------
-    Поиск
+    Поиск (исправлен)
     ----------------------------------------*/
-
-    public static ArrayList<User> searchUserFIO(ArrayList<User> phonebooks){
+    public  ArrayList<User> searchUser(){
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Введите ФИО для поиска:");
-        String fio= scanner.nextLine();
         ArrayList<User> searchUsers=new ArrayList<>();
-        phonebooks.stream()
-                .filter(x -> Objects.equals(fio,x.getFio()))
-                .forEach(searchUsers::add);
-        return searchUsers;
-    }
-
-
-    public static ArrayList<User> searchUserPhone(ArrayList<User> phonebooks){
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Введите Phone для поиска:");
-        String phone= scanner.nextLine();
-        ArrayList<User> searchUsers=new ArrayList<>();
-        phonebooks.stream()
-                .filter(x -> x.getPhones().containsValue(phone))
-                .forEach(searchUsers::add);
-        return searchUsers;
-    }
-
-     /*---------------------------------------
-    Удаление
-    ----------------------------------------*/
-
-    public static void deleteUser(ArrayList<User> phonebooks,ArrayList<User> delete){
-        delete.stream().forEach(phonebooks::remove);
-        System.out.println("Удалены элементы: \n" + delete.toString());
-    }
-
-     /*---------------------------------------
-    Сортировкой
-    ----------------------------------------*/
-     static class UserFIOComparator implements Comparator<User> {
-
-         public int compare(User a, User b) {
-             return a.getFio().substring(0,1).compareTo(b.getFio().substring(0,1));
-         }
-     }
-
-    static class UserAgeComparator implements Comparator<User> {
-
-        public int compare(User a, User b) {
-                return a.getbDay().compareTo(b.getbDay());
+        while (true) {
+            System.out.println("====================Выберите поле для поиска====================");
+            System.out.println(" ______________________________________________________");
+            System.out.println("|  Field   |              Description                  |");
+            System.out.println("|__________|___________________________________________|");
+            System.out.println("|  FIO     | ФИО пользователя                          |");
+            System.out.println("|  Phone   | Контакт пользователя                      |");
+            System.out.println("|  exit    | Выход                                     |");
+            System.out.println("|______________________________________________________|");
+            System.out.print("Введите поле для поиска:");
+        switch (scanner.nextLine()){
+            case "FIO":
+                System.out.print("Введите FIO:");
+                String fio= scanner.nextLine();
+                this.users.stream()
+                        .filter(x -> x.getFio().contains(fio))
+                        .forEach(searchUsers::add);
+                return searchUsers;
+            case "Phone":
+                System.out.print("Введите Phone:");
+                String phone= scanner.nextLine();
+                this.users.stream().filter(x->x.getPhones().contains(phone)).forEach(searchUsers::add);
+                return searchUsers;
+            case "exit":
+                System.out.print("====================Поиск завершен====================");
+                return searchUsers;
+            default:
+                System.out.print("=======Поиск по указанному полю не предусмотрен!======");
+                break;
         }
+        }
+    }
+        /*---------------------------------------
+    Вывод елементов (Исправлено)
+     ----------------------------------------*/
+    public void print(List<User> users){
+        System.out.println("============================================Пользователи============================================");
+        System.out.println(" ________________________________________________________________________________________________________________________________");
+        System.out.println("|               |               |             |                                                        |        Последнея        |");
+        System.out.println("|      ФИО      | Дата рождения |    Номер    |                    Адрес проживания                    |       модификация       |");
+        System.out.println("|_______________|_______________|_____________|________________________________________________________|_________________________|");
+        for (User userTMP : users) {
+            System.out.printf("|%15s|%15s|%13s|%56s|%25s"
+                    , userTMP.getFio()
+                    , userTMP.getbDay().toString()
+                    , userTMP.getPhones().get(0)
+                    , userTMP.getAddress()
+                    , userTMP.getChange().toString() + "|\n");
+                for (String s : userTMP.getPhones().subList(1,userTMP.getPhones().size())) {
+                    System.out.printf("|%15s|%15s|%13s|%56s|%25s"
+                            , ""
+                            , ""
+                            , s
+                            , ""
+                            , "" + "|\n");
+                }
+            }
+
+        System.out.println(" |___________________________________________________________________________________________________________________________________________|");
+    }
+
+
+     /*---------------------------------------
+    Удаление(исправлено)
+    ----------------------------------------*/
+
+    public void deleteUser(List<User> delete){
+
+        delete.forEach(users::remove);
+        System.out.println("=============Записи успешно удалены==============");
+    }
+
+
+
     /*---------------------------------------
     Запись в файл
     ----------------------------------------*/
-   public static String serializationUser(ArrayList<User> phonebooks) throws Exception{
-        String rez = new String();
-       ObjectMapper mapper = new ObjectMapper();
-       // pretty printing (json с отступами)
-       mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-       // для работы с полями типа LocalDate
-       SimpleModule module = new SimpleModule();
-       module.addSerializer(LocalDate.class, new LocalDateSerializer());
-       module.addDeserializer(LocalDate.class, new LocalDateDeserializer());
-       mapper.registerModule(module);
-       return  mapper.writeValueAsString(phonebooks);
-   }
-
    // Запись
-        public static void toFile(ArrayList<User> phonebooks) throws Exception {
-
-            File file = Paths.get("TestFiles/Users.data").toFile();
-            FileOutputStream outputStream = new FileOutputStream(file);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            // сохраняем в файл
-            objectOutputStream.writeObject(serializationUser(phonebooks));
-
-            //закрываем поток и освобождаем ресурсы
-            objectOutputStream.close();
-        }
-
-        //Чтение
-        public static ArrayList<User> fromFile() throws Exception {
-            ObjectMapper mapper = new ObjectMapper();
-            // pretty printing (json с отступами)
-            mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-            // для работы с полями типа LocalDate
+        public void toFile() throws Exception {
             SimpleModule module = new SimpleModule();
             module.addSerializer(LocalDate.class, new LocalDateSerializer());
             module.addDeserializer(LocalDate.class, new LocalDateDeserializer());
-            mapper.registerModule(module);
-
-
-            File file = Paths.get("TestFiles/Users.data").toFile();
-            FileInputStream fileInputStream = new FileInputStream(file);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            String users = (String) objectInputStream.readObject();
-            return mapper.readValue(users,ArrayList.class);
+            module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
+            module.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
+           ObjectMapper objectMapper =new ObjectMapper();
+            objectMapper.registerModule(module);
+           String json = objectMapper.writeValueAsString(users);
+            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+            // сохраняем в файл
+            Files.write(Paths.get("TestFiles/Users.json"), json.getBytes(StandardCharsets.UTF_8));
         }
 
-
-        public static void main(String[] args) throws Exception {
-            UserFIOComparator uFIOComp = new UserFIOComparator();
-            UserAgeComparator uAgeComp = new UserAgeComparator();
-            ArrayList<User> phonebooks = new ArrayList<>();
-            //newUser(phonebooks); // ручное создание пользователей
-
-
-            HashMap<PhoneType, String> phones1 = new HashMap<>();
-            phones1.put(PhoneType.MOB, "0977503107");
-            phones1.put(PhoneType.HOME, "04450549");
-            User user1 = new User("Базелюк В.В"
-                    , LocalDate.of(1994, 3, 27)
-                    , phones1
-                    , new ResidenceAddress("Украина"
-                    , "Днепр"
-                    , "Ермоловой"
-                    , (short) 46
-                    , (short) 3)
-            );
-
-            HashMap<PhoneType, String> phones2 = new HashMap<>();
-            phones2.put(PhoneType.MOB, "0953967105");
-            phones2.put(PhoneType.HOME, "04450549");
-            User user2 = new User("Базелюк Я.О"
-                    , LocalDate.of(1993, 6, 7)
-                    , phones2
-                    , new ResidenceAddress("Украина"
-                    , "Днепр"
-                    , "Ермоловой"
-                    , (short) 46
-                    , (short) 3)
-            );
-
-            User user3 = new User("Caльник Я.О"
-                    , LocalDate.of(1993, 5, 7)
-                    , phones2
-                    , new ResidenceAddress("Украина"
-                    , "Днепр"
-                    , "Ермоловой"
-                    , (short) 46
-                    , (short) 3)
-            );
-
-
-            phonebooks.add(user1);
-            phonebooks.add(user3);
-            phonebooks.add(user2);
-            System.out.println("Все пользователи");
-            System.out.println(phonebooks.toString());
-            System.out.println("Запись в файл");
-            toFile(phonebooks);
-            System.out.println("Файл записан");
-
-            System.out.println("Чтение с файла");
-            ArrayList<User> phonebookDeserial = fromFile();
-            System.out.println("Файл прочитан");
-            System.out.println(phonebookDeserial.toString());
-
-            System.out.println("Сортированные пользователи по ФИО пользователи");
-            phonebooks.sort(uFIOComp);
-            System.out.println(phonebooks.toString());
-            System.out.println("Сортированные пользователи по дате рождения пользователи");
-            phonebooks.sort(uAgeComp);
-            System.out.println(phonebooks.toString());
-            System.out.println("Найденные пользователи");
-            System.out.println(searchUserPhone(phonebooks).toString());
-            System.out.println("Удаляем елемент");
-            deleteUser(phonebooks, searchUserPhone(phonebooks));
-            System.out.println("Исходный справочник после удаления");
-            System.out.println(phonebooks.toString());
-
-            /*
-             */
-
+        //Чтение
+        public void fromFile() throws Exception {
+            SimpleModule module = new SimpleModule();
+            module.addDeserializer(LocalDate.class, new LocalDateDeserializer());
+            module.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
+            ObjectMapper objectMapper =new ObjectMapper();
+            objectMapper.registerModule(module);
+            byte[] bytesData = Files.readAllBytes(Paths.get("TestFiles/Users.json"));
+            List<User> users1 =objectMapper.readValue(bytesData, new TypeReference<List<User>>() {});
+           this.users.clear();
+            this.users.addAll(users1);
 
         }
     }
-}
