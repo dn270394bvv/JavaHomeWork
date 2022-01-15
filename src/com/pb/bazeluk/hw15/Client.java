@@ -1,9 +1,11 @@
-package com.pb.bazeluk.hw14;
+package com.pb.bazeluk.hw15;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Iterator;
-import java.util.Objects;
 
 public class Client {
 
